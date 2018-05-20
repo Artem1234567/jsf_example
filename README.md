@@ -1,1 +1,1 @@
-jsf_example
+jsf example

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>All posts</title>
+</h:head>
+
+<h:body>
+    <h2>All Posts</h2>
+
+    <h:form id="form">
+        <p:dataTable var="post" value="#{dtColumnsView.posts}" style="margin-bottom:40px">
+            <f:facet name="header">
+                Posts
+            </f:facet>
+            <p:column headerText="Name" sortBy="#{post.name}">
+                <h:outputText value="#{post.name}"/>
+            </p:column>
+            <p:column headerText="Value" sortBy="#{post.value}">
+                <h:outputText value="#{post.value}"/>
+            </p:column>
+            <p:column headerText="DataType" sortBy="#{post.dataType}">
+                <h:outputText value="#{post.dataType}"/>
+            </p:column>
+            <p:column headerText="CreationDateTime" sortBy="#{post.creationDateTime}">
+                <h:outputText value="#{post.creationDateTime}"/>
+            </p:column>
+        </p:dataTable>
+
+    </h:form>
+    <br/>
+
+    <h:form>
+        <h:commandButton action="index" value="Home Page"/>
+    </h:form>
+</h:body>
+</html>
