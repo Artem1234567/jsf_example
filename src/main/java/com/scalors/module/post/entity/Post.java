@@ -1,6 +1,5 @@
 package com.scalors.module.post.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.faces.bean.ManagedBean;
@@ -33,11 +32,13 @@ public class Post {
     private Date creationDateTime;
 
     @Column(name = "lastUpdateDateTime")
-    @JsonIgnore
     private Date lastUpdateDateTime;
 
     @Column(name = "countUpdates")
-    @JsonIgnore
-    private long countUpdates;
+    private Integer countUpdates;
 
+    public synchronized void incrementCountUpdates() {
+        if (countUpdates == null) countUpdates = 0;
+        countUpdates += 1;
+    }
 }

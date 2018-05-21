@@ -21,8 +21,6 @@ public class PostController {
     @Path("/find/id/{id : \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response readById(@PathParam("id") long id) {
-        System.out.println(" => id: " + id);
-
         Optional<Post> found = postRepository.findById(id);
         if (found.isPresent()) {
             return Response.status(Response.Status.OK).entity(found.get()).build();
@@ -34,7 +32,6 @@ public class PostController {
     @Path("/find/name/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response readByName(@PathParam("name") String name) {
-        System.out.println(" => name: " + name);
         Optional<List<Post>> found = postRepository.findByName(name);
         if (found.isPresent()) {
             return Response.status(Response.Status.OK).entity(found.get()).build();
@@ -66,23 +63,28 @@ public class PostController {
         postRepository.savePostBatch(list);
     }
 
-    @GET
+    @POST
     @Path("/update/name/{name}/{datatype}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateByName(@PathParam("name") String name, @PathParam("datatype") String datatype) {
         Optional<List<Post>> found = postRepository.findByName(name);
-        if (!found.get().isEmpty()) {
-            Post post = found.get().get(0);
-            post.setDataType(datatype);
-            Optional<Post> updated = postRepository.update(post);
-            if (updated.isPresent()) {
-                return Response.status(Response.Status.OK).entity("Post was successfully updated.").build();
+        if (found.isPresent()) {
+            if (!found.get().isEmpty()) {
+                Post post = found.get().get(0);
+                post.setDataType(datatype);
+                post.setLastUpdateDateTime(new Date());
+                post.incrementCountUpdates();
+
+                Optional<Post> updated = postRepository.update(post);
+                if (updated.isPresent()) {
+                    return Response.status(Response.Status.OK).entity("Post was successfully updated.").build();
+                }
             }
         }
         return Response.status(Response.Status.OK).entity("Post was not found and was not updated.").build();
     }
 
-    @GET
+    @POST
     @Path("/remove/id/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteById(@PathParam("id") Long id) {
@@ -96,7 +98,7 @@ public class PostController {
         return Response.status(Response.Status.OK).entity("Post was successfully deleted.").build();
     }
 
-    @GET
+    @POST
     @Path("/remove/name/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteByName(@PathParam("name") String name) {
@@ -115,7 +117,6 @@ public class PostController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response creationDateTime(String name) {
         Optional<List<Post>> found = postRepository.findByName(name);
-
         if (found.isPresent()) {
             List<Date> dates = new ArrayList<>();
             for (Post p : found.get()) dates.add(p.getCreationDateTime());
